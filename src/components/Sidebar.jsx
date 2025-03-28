@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -16,7 +15,8 @@ import {
   HelpCircle,
   ChevronRight,
   ChevronLeft,
-  GraduationCap
+  GraduationCap,
+  Clipboard
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { cn } from '@/lib/utils';
@@ -44,6 +44,7 @@ const facultyMenuItems = [
 
 const studentMenuItems = [
   { icon: Home, label: 'Dashboard', path: '/student/dashboard' },
+  { icon: Clipboard, label: 'Attendance', path: '/student/attendance' },
   { icon: BookOpen, label: 'Courses', path: '/student/courses' },
   { icon: Calendar, label: 'Schedule', path: '/student/schedule' },
   { icon: FileText, label: 'Assignments', path: '/student/assignments' },

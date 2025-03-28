@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./context/AuthContext";
+import AttendanceAnalytics from "./components/AttendanceAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => (
             
             {/* Student routes */}
             <Route path="/student/dashboard" element={<Dashboard />} />
+            <Route path="/student/attendance" element={<AttendanceAnalytics/>} />
             <Route path="/student/courses" element={<Dashboard />} />
             <Route path="/student/schedule" element={<Dashboard />} />
             <Route path="/student/assignments" element={<Dashboard />} />
