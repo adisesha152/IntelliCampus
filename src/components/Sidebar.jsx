@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Home, 
@@ -16,11 +16,19 @@ import {
   ChevronRight,
   ChevronLeft,
   GraduationCap,
-  Clipboard
+  Clipboard,
+  Database,
+  Server,
+  Building,
+  Briefcase,
+  PieChart,
+  Book,
+  ShieldCheck // Add ShieldCheck to the import list
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { cn } from '@/lib/utils';
 
+// Define menu items by role
 const adminMenuItems = [
   { icon: Home, label: 'Dashboard', path: '/admin/dashboard' },
   { icon: Users, label: 'User Management', path: '/admin/users' },
@@ -29,6 +37,8 @@ const adminMenuItems = [
   { icon: BarChart, label: 'Reports', path: '/admin/reports' },
   { icon: GraduationCap, label: 'Faculty', path: '/admin/faculty' },
   { icon: CreditCard, label: 'Finance', path: '/admin/finance' },
+  { icon: Database, label: 'Academic Data', path: '/admin/academic-data' },
+  { icon: Server, label: 'System', path: '/admin/system' },
   { icon: Settings, label: 'Settings', path: '/admin/settings' }
 ];
 
@@ -38,6 +48,8 @@ const facultyMenuItems = [
   { icon: BookOpen, label: 'Courses', path: '/faculty/courses' },
   { icon: FileText, label: 'Assessments', path: '/faculty/assessments' },
   { icon: Calendar, label: 'Schedule', path: '/faculty/schedule' },
+  { icon: PieChart, label: 'Grades', path: '/faculty/grades' },
+  { icon: Book, label: 'Resources', path: '/faculty/resources' },
   { icon: Mail, label: 'Messages', path: '/faculty/messages' },
   { icon: Settings, label: 'Settings', path: '/faculty/settings' }
 ];
@@ -72,8 +84,22 @@ const Sidebar = () => {
       menuItems = studentMenuItems;
       break;
     default:
-      menuItems = [];
+      menuItems = studentMenuItems; // Default to student
   }
+
+  // Get role specific sidebar title and icon
+  const getRoleBranding = () => {
+    switch(user?.role) {
+      case 'admin':
+        return { title: 'Admin Portal', icon: <ShieldCheck className="h-7 w-7 text-purple-500" /> };
+      case 'faculty':
+        return { title: 'Faculty Portal', icon: <GraduationCap className="h-7 w-7 text-green-500" /> };
+      default:
+        return { title: 'IntelliCampus', icon: <GraduationCap className="h-7 w-7 text-blue-500" /> };
+    }
+  };
+
+  const branding = getRoleBranding();
 
   return (
     <div 
@@ -84,11 +110,17 @@ const Sidebar = () => {
     >
       <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200">
         {!collapsed && (
-          <h1 className="text-xl font-semibold text-gradient">IntelliCampus</h1>
+          <h1 className={cn(
+            "text-xl font-semibold",
+            user?.role === 'admin' ? 'text-purple-600' :
+            user?.role === 'faculty' ? 'text-green-600' : 'text-blue-600'
+          )}>
+            {branding.title}
+          </h1>
         )}
         {collapsed && (
           <div className="mx-auto">
-            <GraduationCap className="h-7 w-7 text-blue-500" />
+            {branding.icon}
           </div>
         )}
         <button 
@@ -108,14 +140,18 @@ const Sidebar = () => {
               className={cn(
                 "flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 location.pathname === item.path 
-                  ? "bg-blue-50 text-blue-700"
+                  ? user?.role === 'admin' ? "bg-purple-50 text-purple-700" :
+                    user?.role === 'faculty' ? "bg-green-50 text-green-700" :
+                    "bg-blue-50 text-blue-700"
                   : "text-slate-700 hover:bg-slate-100",
                 collapsed && "justify-center px-2"
               )}
             >
               <item.icon className={cn("h-5 w-5", 
                 location.pathname === item.path 
-                  ? "text-blue-600"
+                  ? user?.role === 'admin' ? "text-purple-600" :
+                    user?.role === 'faculty' ? "text-green-600" :
+                    "text-blue-600"
                   : "text-slate-500"
               )} />
               {!collapsed && <span>{item.label}</span>}

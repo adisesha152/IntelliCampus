@@ -93,7 +93,7 @@ const LoginForm = () => {
       
       // Check credentials (in a real app, this would be an API call)
       if (
-        (userCredentials.role === 'student' && userCredentials.email === 'student@example.com' && userCredentials.password === 'password') ||
+        (userCredentials.role === 'student' && userCredentials.email === 'student@example.com' && userCredentials.password === '1234') ||
         (userCredentials.role === 'faculty' && userCredentials.email === 'faculty@example.com' && userCredentials.password === 'password') ||
         (userCredentials.role === 'admin' && userCredentials.email === 'admin@example.com' && userCredentials.password === 'password')
       ) {

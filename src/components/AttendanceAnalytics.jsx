@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from './Card';
 import { AlertTriangle } from 'lucide-react';
+import Button from './Button';
+import Layout from './Layout';
 
 const AttendanceAnalytics = () => {
   const [nfcStatus, setNfcStatus] = useState('waiting');
@@ -22,55 +22,67 @@ const AttendanceAnalytics = () => {
     return (present / total) * 100 < required;
   };
 
-  return (
-    <div className="p-6 space-y-6">
-      <Card className="p-4">
-        <h2 className="text-xl font-semibold mb-4">NFC Attendance</h2>
-        <div className="flex items-center space-x-4 mb-4">
-          <div className={`h-4 w-4 rounded-full ${
-            nfcStatus === 'waiting' ? 'bg-yellow-400' :
-            nfcStatus === 'success' ? 'bg-green-400' : 'bg-gray-400'
-          }`} />
-          <span className="capitalize">{nfcStatus}</span>
-        </div>
-        <button 
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-          onClick={() => setNfcStatus('scanning')}
-        >
-          Scan NFC
-        </button>
+  const content = (
+    <div className="p-6 space-y-6 animate-fade-in">
+      <Card>
+        <CardHeader className="p-6 pb-2">
+          <CardTitle>NFC Attendance</CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="flex items-center space-x-4 mb-4">
+            <div className={`h-4 w-4 rounded-full ${
+              nfcStatus === 'waiting' ? 'bg-yellow-400' :
+              nfcStatus === 'success' ? 'bg-green-400' : 'bg-gray-400'
+            }`} />
+            <span className="capitalize">{nfcStatus}</span>
+          </div>
+          <Button 
+            variant="primary"
+            onClick={() => setNfcStatus('scanning')}
+          >
+            Scan NFC
+          </Button>
+        </CardContent>
       </Card>
 
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Attendance Analytics</h2>
         {attendance.subjects.map((subject) => (
-          <Card key={subject.name} className="p-4">
-            <div className="flex justify-between mb-2">
-              <h3 className="font-medium">{subject.name}</h3>
-              <span className="text-sm">
-                {subject.present}/{subject.total} classes
-              </span>
-            </div>
-            <Progress 
-              value={calculateAttendance(subject.present, subject.total)} 
-              className="h-2"
-            />
-            {isLowAttendance(subject.present, subject.total, subject.required) && (
-              <Alert variant="destructive" className="mt-2">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Low Attendance Warning</AlertTitle>
-                <AlertDescription>
-                  Your attendance is below {subject.required}%. Required classes to attend: {
-                    Math.ceil((subject.required/100 * subject.total) - subject.present)
-                  }
-                </AlertDescription>
-              </Alert>
-            )}
+          <Card key={subject.name}>
+            <CardContent className="p-6">
+              <div className="flex justify-between mb-2">
+                <h3 className="font-medium">{subject.name}</h3>
+                <span className="text-sm">
+                  {subject.present}/{subject.total} classes
+                </span>
+              </div>
+              <div className="w-full bg-slate-200 rounded-full h-2">
+                <div 
+                  className="rounded-full h-2 bg-blue-500"
+                  style={{ width: `${calculateAttendance(subject.present, subject.total)}%` }}
+                ></div>
+              </div>
+              {isLowAttendance(subject.present, subject.total, subject.required) && (
+                <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md flex items-start">
+                  <AlertTriangle className="h-5 w-5 text-red-500 mr-2 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-red-800">Low Attendance Warning</p>
+                    <p className="text-sm text-red-700">
+                      Your attendance is below {subject.required}%. Required classes to attend: {
+                        Math.ceil((subject.required/100 * subject.total) - subject.present)
+                      }
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
           </Card>
         ))}
       </div>
     </div>
   );
+
+  return <Layout>{content}</Layout>;
 };
 
 export default AttendanceAnalytics;

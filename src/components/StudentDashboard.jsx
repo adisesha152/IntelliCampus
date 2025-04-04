@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './Card';
 import ProfileCard from './ProfileCard';
 import { BookOpen, FileText, Calendar, Clock, Bell, TrendingUp, Award, ChevronRight } from 'lucide-react';
 import Button from './Button';
+import Layout from './Layout';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -47,7 +47,7 @@ const StudentDashboard = () => {
     { message: 'Grades posted for PHYS105 midterm', time: '1 day ago' },
   ];
 
-  return (
+  const content = (
     <div className="p-6 space-y-6 animate-fade-in">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
@@ -197,6 +197,8 @@ const StudentDashboard = () => {
       </div>
     </div>
   );
+
+  return <Layout>{content}</Layout>;
 };
 
 export default StudentDashboard;
